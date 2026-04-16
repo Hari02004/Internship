@@ -9,8 +9,8 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalException {
-    @ExceptionHandler(RunTimeException.class)
-    public ResponseEntity<?> HandleException(RunTimeException ex){
+    @ExceptionHandler(CustomRunTimeException.class)
+    public ResponseEntity<?> handleException(CustomRunTimeException ex){
         return ResponseEntity
                 .status(ex.getStatus())
                 .body(Map.of("message",ex.getMessage(),"status",ex.getStatus()));

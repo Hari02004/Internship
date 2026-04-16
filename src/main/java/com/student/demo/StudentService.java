@@ -1,7 +1,7 @@
 package com.student.demo;
 
 import com.student.demo.entity.Student;
-import com.student.demo.exception.RunTimeException;
+import com.student.demo.exception.CustomRunTimeException;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class StudentService {
         return repository.findAll();
     }
     public Student getStudentById(Long id){
-        return repository.findById(id).orElseThrow(() -> new RunTimeException(HttpStatus.NOT_FOUND, "Student not found"));
+        return repository.findById(id).orElseThrow(() -> new CustomRunTimeException(HttpStatus.NOT_FOUND, "Student not found"));
     }
     public Student saveUser(Student student){
         return repository.save(student);

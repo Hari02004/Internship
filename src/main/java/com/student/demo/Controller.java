@@ -1,6 +1,7 @@
 package com.student.demo;
 
 import com.student.demo.entity.Student;
+import com.student.demo.exception.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +44,8 @@ public class Controller {
         return ResponseEntity.ok(updateStudent);
     }
     @PostMapping({"/uploads"})
-    public ResponseEntity<Student> getDetailsFromTheFile(@RequestParam("file")MultipartFile file){
-        Student allTheDetails = resumeService.processResume(file);
+    public ResponseEntity<ResponseDto> getDetailsFromTheFile(@RequestParam("file")MultipartFile file){
+        ResponseDto allTheDetails = resumeService.processResume(file);
         return ResponseEntity.ok(allTheDetails);
     }
 }

@@ -1,6 +1,9 @@
 package com.student.demo;
 
 import com.student.demo.entity.Student;
+import com.student.demo.exception.ResponseDto;
+import com.student.demo.exception.CustomRunTimeException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,14 +14,16 @@ import java.nio.file.Files;
 @Service
 public class ResumeService {
     private final ProcessResume parser;
+    private final StudentRepository studentRepository;
 
-    public ResumeService(ProcessResume parser) {
+    public ResumeService(ProcessResume parser, StudentRepository studentRepository) {
         this.parser = parser;
+        this.studentRepository = studentRepository;
     }
 
-    public Student processResume(MultipartFile file){
+    public ResponseDto processResume(MultipartFile file){
         if(file.isEmpty())
-            throw new RuntimeException("File is empty");
+            throw new CustomRunTimeException(HttpStatus.FORBIDDEN,"File is empty");
         try{
             String uploadDir = System.getProperty("user.dir") + "/uploads/";
             File folder = new File(uploadDir);
@@ -33,10 +38,16 @@ public class ResumeService {
             serviceStudent.setFileName(extractName);
             serviceStudent.setFileEmail(extractEmail);
             serviceStudent.setPath(savedFile.getAbsolutePath());
-            return serviceStudent;
+            studentRepository.save(serviceStudent);
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setCourse(serviceStudent.getCourse());
+            responseDto.setFileName(serviceStudent.getFileName());
+            responseDto.setName(serviceStudent.getName());
+
+            return responseDto;
         }catch(IOException ex){
             ex.printStackTrace();
-            throw new RuntimeException("File Upload error in ResumeService"+" "+ex.getMessage());
+            throw new CustomRunTimeException(HttpStatus.BAD_REQUEST,ex.getMessage());
         }
 
     }
